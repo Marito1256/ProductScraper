@@ -1,1 +1,4 @@
-print('Hello World')
+from dotenv import load_dotenv
+import os
+import openai
+print('gewer')
