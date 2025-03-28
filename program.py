@@ -56,7 +56,7 @@ def extract_products(soup):
 
     return products
 
-def main(searchParam):
+def mainone(searchParam):
     options= uc.ChromeOptions()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -79,10 +79,13 @@ def main(searchParam):
     # itemStack = soup.find("div", attrs={"data-testid":"item-stack"})
     # titles = itemStack.find_all("span", class_="w_iUH7")
     products = extract_products(soup)
-    for product in products:
-        print(f"Title:\n{product['title']}\nprice:\n{product['price']}\nReviews:\n{product['reviews']}\n")
+    # for product in products:
+    #     print(f"Product:\n{product['title']}\nprice:\n{product['price']}\nReviews:\n{product['reviews']}\n")
     print("thats all")
     print("\n\n\n\n")
+    return products
 if __name__ == "__main__":
     input = input("Search here\n")
-    main(input)
+    products = mainone(input)
+    for product in products:
+        print(f"Product:\n{product['title']}\nprice:\n{product['price']}\nReviews:\n{product['reviews']}\n")

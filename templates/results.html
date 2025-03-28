@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - {% if query %}{{ query }}{% else %}All Products{% endif %}</title>
+    <link rel="stylesheet" href="/static/css/bootstrap-agent-dark-theme.min.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="results-container">
+        <div class="container">
+            <header class="py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="results-title">Search Results</h1>
+                        {% if query %}
+                        <p class="text-muted">Showing results for: "{{ query }}"</p>
+                        {% else %}
+                        <p class="text-muted">Showing all products</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <form id="search-form" action="/search" method="GET" class="d-flex">
+                            <input type="text" id="search-input" name="q" class="form-control search-input-small me-2" 
+                                   placeholder="Search again..." value="{{ query }}" aria-label="Search">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+
+            <div class="results-list">
+                {% if results %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for item in results %}
+                            <div class="col">
+                                <div class="card h-100 result-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ item.title }}</h5>
+                                        <div class="price-review-container">
+                                            <p class="card-text price-tag">${{ item.price }}</p>
+                                            <div class="review-stars">
+                                                {% set full_stars = item.reviews|int %}
+                                                {% set half_star = (item.reviews|float - full_stars) >= 0.5 %}
+                                                
+                                                {% for i in range(full_stars) %}
+                                                    <i class="fas fa-star"></i>
+                                                {% endfor %}
+                                                
+                                                {% if half_star %}
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                {% endif %}
+                                                
+                                                {% for i in range(5 - full_stars - (1 if half_star else 0)) %}
+                                                    <i class="far fa-star"></i>
+                                                {% endfor %}
+                                                
+                                                <span class="review-count">{{ item.reviews }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button class="btn btn-sm btn-outline-info w-100">View Details</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-results">
+                        <div class="text-center py-5">
+                            <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                            <h3>No results found</h3>
+                            <p class="text-muted">Try a different search term or browse all products.</p>
+                            <a href="/" class="btn btn-secondary mt-3">Return to Search</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <footer class="mt-5 mb-4 text-center">
+                <a href="/" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Search
+                </a>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
