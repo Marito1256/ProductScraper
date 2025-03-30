@@ -20,7 +20,7 @@ openai.api_key = os.getenv("OPENAI_APIKEY")
 import undetected_chromedriver as uc
 HTML1 = str()
 
-def extract_products(soup):
+def extract_products_walmart(soup):
     products = []
 
     # Each product card is a direct child of the item stack container
@@ -55,6 +55,15 @@ def extract_products(soup):
         })
 
     return products
+def extract_products_SamsClub(soup):
+    products = []
+    product_elements = soup.select_one('div.sc-plp-cards.sc-plp-cards-grid')
+    if product_elements:
+        for element in product_elements.select('div.sc-pc-title-medium h3'):
+            print(element.get_text(strip=True))
+    else:
+        print("no product element found")
+    return products
 
 def mainone(searchParam):
     options= uc.ChromeOptions()
@@ -65,22 +74,26 @@ def mainone(searchParam):
 
 
     driver=uc.Chrome(options=options)
+    # target_driver = uc.Chrome(options=options)
     try:
-        driver.get(f"https://www.walmart.com/search?q={searchParam}")
-        HTML1 = driver.page_source
+        # driver.get(f"https://www.walmart.com/search?q={searchParam}")
+        # HTML1 = driver.page_source
+        driver.get(f"https://www.samsclub.com/s/{searchParam}")
+        HTML2 = driver.page_source
         # print(driver.page_source[:1000])
     finally:
         try:
             driver.quit()
         except:
             pass
-    soup = BeautifulSoup(HTML1, "html.parser")
+    soup = BeautifulSoup(HTML2, "html.parser")
+    soup2 = BeautifulSoup(HTML2, "html.parser")
     # title = soup.find("h1", id="main-title").get_text(strip=True)
     # itemStack = soup.find("div", attrs={"data-testid":"item-stack"})
     # titles = itemStack.find_all("span", class_="w_iUH7")
-    products = extract_products(soup)
-    # for product in products:
-    #     print(f"Product:\n{product['title']}\nprice:\n{product['price']}\nReviews:\n{product['reviews']}\n")
+    products = extract_products_SamsClub(soup)
+    # products += extract_prodcuts_target(soup2)
+    # print(HTML2) checking we can access the html in the first place
     print("thats all")
     print("\n\n\n\n")
     return products
