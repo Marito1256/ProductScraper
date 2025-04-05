@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  webserver:
+    build: .
+    container_name: Scraper
+    ports:
+      - "5000:5000"  # Exposes container port 5000 to an unused host port
+    environment:
+      - FLASK_APP=site_1.py
+      - FLASK_ENV=.env
+    command: gunicorn --bind 0.0.0.0:5000 main:app
+    restart: unless-stopped
+
