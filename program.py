@@ -108,8 +108,10 @@ def extract_products_Target(soup):
         title = card.find("a", attrs={"data-test": "product-title"}).get_text(strip=True) if card.find("a", attrs={"data-test": "product-title"}) else "N/A"
         priceSpan = card.find("span", attrs={"data-test": "current-price"})
         price = priceSpan.find("span").get_text(strip=True) if priceSpan else "N/A"
-        reviews = card.find("span", attrs={"class": "styles_ndsScreenReaderOnly__mcNC_ styles_notFocusable__XkHOR"}).get_text(strip=True) if card.find("span", attrs={"data-test": "rating-count"}) else "N/A"
-        
+        # reviews = card.find("span", attrs={"class": "styles_ndsScreenReaderOnly__mcNC_ styles_notFocusable__XkHOR"}).get_text(strip=True) if card.find("span", attrs={"data-test": "rating-count"}) else "N/A"
+        rating_span = card.find("span", attrs={"data-test": "rating-count"})
+        reviews = rating_span.get_text(strip=True) if rating_span else "N/A"
+
         products.append({
             "title": title,
             "price": price,
@@ -135,7 +137,7 @@ def mainone(searchParam):
         WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div[data-test="@web/site-top-of-funnel/ProductCardWrapper"]'))
         )
-        time.sleep(10)
+        time.sleep(2)
         HTML1 = driver.page_source
         # print(driver.page_source[:1000])
         soup = BeautifulSoup(HTML1, "html.parser")
@@ -152,6 +154,7 @@ def mainone(searchParam):
     return products
 if __name__ == "__main__":
     input = input("Search here\n")
+    totalProducts = []
     products = mainone(input)
     count = 0
     for product in products:
