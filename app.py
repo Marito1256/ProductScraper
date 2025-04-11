@@ -46,17 +46,18 @@ def search():
         results = search_data
     
     return render_template('results.html', results=results, query=query)
-from program import mainone
+from program import mainfun
 @app.route('/api/search', methods=['POST'])
 def api_search():
     """API endpoint for search (used for AJAX requests if needed)."""
     query=request.form.get('q')
     results = search_data
     print(query)
-    products = mainone(query)
+    products, summary = mainfun(query)
     for product in products:
         print(f"Product:\n{product['title']}\nprice:\n{product['price']}\nReviews:\n{product['reviews']}\n")
-    return render_template('results.html', results=products, query=query)
+    print(summary)
+    return render_template('results.html', results=products, query=query, summary=summary)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
